@@ -285,8 +285,14 @@ class Scraper(CachingSession, ThrottledSession, RetrySession):
         headers = requests.sessions.merge_setting(headers, self.headers)
         headers = requests.sessions.merge_setting(kwargs.pop('headers', {}), headers)
 
-        resp = super(Scraper, self).request(method, url, timeout=timeout, headers=headers,
-                                            **kwargs)
+        try:
+            resp = super(Scraper, self).request(method, url, timeout=timeout, headers=headers,
+                                                **kwargs)
+        except requests.HTTPError as e:
+            if self.raise_errors:
+                raise
+            else:
+                return requests.Response()
         if self.raise_errors and not self.accept_response(resp):
             raise HTTPError(resp)
         return resp

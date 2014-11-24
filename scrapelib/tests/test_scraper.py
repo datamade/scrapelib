@@ -123,6 +123,20 @@ def test_500():
     assert resp.status_code == 500
 
 
+def test_requests_errors_with_raise_error():
+    s = Scraper(requests_per_minute=0)
+
+    def raise_httperror(method, url, *args, **kwargs):
+        raise requests.HTTPError('oh no!')
+
+    with mock.patch.object(requests.Session, 'request', raise_httperror):
+        pytest.raises(requests.HTTPError, s.get, 'http://dummy/')
+
+        s.raise_errors = False
+        resp = s.get('http://dummy/')
+        
+
+
 def test_caching():
     cache_dir = tempfile.mkdtemp()
     s = Scraper(requests_per_minute=0)
