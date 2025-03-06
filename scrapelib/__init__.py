@@ -62,7 +62,7 @@ class HTTPError(requests.HTTPError):
 
     def __init__(self, response: Response, body: dict = None):
         message = "%s while retrieving %s" % (response.status_code, response.url)
-        super().__init__(message)
+        super().__init__(message, response=response)
         self.response = response
         self.body = body or self.response.text
 
@@ -70,7 +70,9 @@ class HTTPError(requests.HTTPError):
 class FTPError(requests.HTTPError):
     def __init__(self, url: str):
         message = "error while retrieving %s" % url
-        super().__init__(message)
+        response = Response()
+        response.status_code = 503
+        super().__init__(message, response=response)
 
 
 class RetrySession(requests.Session):
