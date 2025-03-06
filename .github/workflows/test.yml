@@ -24,7 +24,7 @@ jobs:
     - name: install Poetry
       uses: snok/install-poetry@v1.4.1
       with:
-        version: ${{ matrix.python-version == '3.8' && '<2' || 'latest' }}
+        version: ${{ matrix.python-version == '3.8' && '1.8' || 'latest' }}
         virtualenvs-path: ~/.virtualenvs
     - name: install dependencies
       run: poetry install
